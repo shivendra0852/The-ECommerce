@@ -35,7 +35,7 @@ public class EmployeeCriteriaRepository {
 	    List<Predicate> conditionsList = new ArrayList<>();
 
 	    if (!helper.isNullOrEmpty(searchBy) && !helper.isNullOrEmpty(search)) {
-	        conditionsList.add(cb.like(root.get(searchBy), "%" + search + "%"));
+	        conditionsList.add(cb.like(root.get(searchBy).as(String.class), "%" + search + "%"));
 	    }
 
 	    if (!helper.isNullOrEmpty(sort) && !helper.isNullOrEmpty(sortBy)) {

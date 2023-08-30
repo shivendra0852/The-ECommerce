@@ -1,5 +1,6 @@
 package com.ecommerce.module;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import com.ecommerce.entity.Admin;
 @RequestMapping("/admins")
 public class AdminController {
 	
+	@Autowired
 	private AdminService adminService;
 	  
     @PostMapping("/register")
