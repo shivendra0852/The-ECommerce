@@ -12,7 +12,7 @@ import com.ecommerce.exception.AuthorizationException;
 import com.ecommerce.model.LoginRequest;
 
 @RestController
-@RequestMapping("/admins")
+@RequestMapping("/admin")
 public class AdminLoginController {
 	
 	@Autowired
