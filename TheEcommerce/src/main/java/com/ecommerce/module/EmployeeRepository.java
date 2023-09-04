@@ -42,7 +42,20 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
 	@Query("SELECT e.name, a.city from Address a JOIN a.employee e WHERE e.age > ?1 AND e.salary IN ?2")
 	public List<Object[]> fetchEmployeeInfoByAgeAndSalary(Integer age, List<Integer> salaries);
 	
-	@Query("SELECT e from Employee e " + "WHERE e.joiningDate BETWEEN ?1 AND ?2 " + "AND e.age BETWEEN ?3 AND ?4 " + "AND e.state.name IN (SELECT s.name from State s WHERE s.name IN ?5) " + "AND e.city.name IN (SELECT c.name from City c WHERE c.name IN ?6) " + "AND e.hasCar = false")
-	List<Employee> fetchEmployeeByConditions(Date startDate, Date endDate, Integer initialAge, Integer finalAge, List<String> stateNames, List<String> cityNames);
+	@Query("SELECT e FROM Employee e " +"WHERE e.joiningDate BETWEEN ?1 AND ?2 " +"AND e.age BETWEEN ?3 AND ?4 " +"AND e.id IN (SELECT a.employee.id FROM Address a WHERE a.state IN ?5) " +"AND e.id IN (SELECT a.employee.id FROM Address a WHERE a.city IN ?6) " +"AND e.hasCar = false")
+	public List<Employee> fetchEmployeeByConditions(Date startDate, Date endDate, Integer initialAge, Integer finalAge, List<String> state, List<String> city);
+	
+	@Query(value = "SELECT MAX(e.salary), MIN(e.salary), AVG(e.salary) from Employee e WHERE e.organization = ?1", nativeQuery = true)
+	public List<Object[]> findHighestLowestAverageSalaryByOrganization(String organization);
+	
+	@Query(value = "SELECT AVG(e.age) from Employee e WHERE e.organization = ?1", nativeQuery = true)
+	public Integer findAverageAgeByOrganization(String organization);
+	
+	
+	public List<Employee> findByJoiningDateBefore(Date oneYearAgo);
+	
+	@Query("SELECT e FROM Employee e WHERE MONTH(e.birthDate) = ?1")
+	public List<Employee> findByBirthDateMonth(Integer month);
 
 }
+

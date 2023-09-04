@@ -44,6 +44,9 @@ public class Employee {
     @NotNull(message = "Age is required")
     @Min(value = 18, message = "Age must be at least 18")
     private Integer age;
+    
+    @NotNull(message = "Date of birth is required")
+    private Date birthDate;
 
     @NotNull(message = "Salary is required")
     @Positive(message = "Salary must be positive")
@@ -67,13 +70,21 @@ public class Employee {
     
     private Boolean joiningDocumentSubmitted;
     
-    @ManyToOne
-    @JoinColumn(name = "state_id")
-    private State state;
+    private String organization;
+    
+    public double calculateQuarterlyBonus() {
+        if (performanceScore >= 80) {
+            return 0.20 * salary;
+        } else {
+            return 0;
+        }
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "city_id")
-    private City city;
-    
-    
+    public double calculateMonthlyIncentive() {
+        if (performanceScore >= 90) {
+            return 0.05 * salary;
+        } else {
+            return 0;
+        }
+    }
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,6 +90,36 @@ public class EmployeeController {
             @RequestParam("cityNames") List<String> cityNames) {
     	
         List<Employee> employees = employeeService.getEmployeeByConditions(startDate, endDate, initialAge, finalAge, stateNames, cityNames);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
+    }
+    
+    @GetMapping("/total-yearly-spending")
+    public ResponseEntity<Double> calculateTotalYearlySpending() throws EmployeeException {
+        double totalYearlySpending = employeeService.calculateTotalYearlySpending();
+        return new ResponseEntity<>(totalYearlySpending, HttpStatus.OK);
+    }
+
+    @GetMapping("/highest-lowest-average-salary")
+    public ResponseEntity<List<Object[]>> getHighestLowestAverageSalaryByOrganization(@RequestParam String organization) throws EmployeeException {
+        List<Object[]> result = employeeService.getHighestLowestAverageSalaryByOrganization(organization);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/average-age")
+    public ResponseEntity<Integer> getAverageAgeByOrganization(@RequestParam String organization) throws EmployeeException {
+        Integer averageAge = employeeService.getAverageAgeByOrganization(organization);
+        return new ResponseEntity<>(averageAge, HttpStatus.OK);
+    }
+
+    @GetMapping("/one-year-anniversary")
+    public ResponseEntity<String> sendEmailOnOneYearOfCompletion() throws EmployeeException {
+        String result = employeeService.sendEmailOnOneYearOfCompletion();
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/birth-month")
+    public ResponseEntity<List<Employee>> getEmployeeByBirthMonth(@RequestParam Integer birthMonth) throws EmployeeException {
+        List<Employee> employees = employeeService.getEmployeeByBirthMonth(birthMonth);
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 

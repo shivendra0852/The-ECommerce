@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.entity.Address;
-import com.ecommerce.entity.City;
 import com.ecommerce.entity.Employee;
-import com.ecommerce.entity.State;
 import com.ecommerce.exception.EmployeeException;
 
 @Service
@@ -84,5 +82,74 @@ public class EmployeeService {
     
     public List<Employee> getEmployeeByConditions(Date startDate, Date endDate, Integer initialAge, Integer finalAge, List<String> stateNames, List<String> cityNames){
     	return employeeRepository.fetchEmployeeByConditions(startDate, endDate, initialAge, finalAge, stateNames, cityNames);
+    }
+    
+    public double calculateTotalYearlySpending() throws EmployeeException{
+    	
+    	double totalYearlySpending = 0;
+    	
+    	List<Employee> employees = employeeRepository.findAll();
+    	
+    	if(employees.isEmpty()) {
+    		throw new EmployeeException("No employee exists!");
+    	}
+    	
+    	for(Employee e: employees) {
+    		
+    		totalYearlySpending += (e.calculateQuarterlyBonus()*4) + (e.calculateMonthlyIncentive()*12);
+    	}
+    	
+    	return totalYearlySpending;
+    }
+    
+    public List<Object[]> getHighestLowestAverageSalaryByOrganization(String organization) throws EmployeeException{
+    	
+    	return employeeRepository.findHighestLowestAverageSalaryByOrganization(organization);
+    }
+    
+    public Integer getAverageAgeByOrganization(String organization) throws EmployeeException{
+    	
+    	return employeeRepository.findAverageAgeByOrganization(organization);
+    }
+    
+    
+    
+    public String sendEmailOnOneYearOfCompletion() throws EmployeeException{
+    	
+    	Date today = new Date();
+        Date oneYearAgo = new Date(today.getTime() - (1000 * 60 * 60 * 24 * 365));
+    	
+    	List<Employee> eligibleEmployees = employeeRepository.findByJoiningDateBefore(oneYearAgo);
+    	
+    	if(eligibleEmployees.isEmpty()) {
+    		throw new EmployeeException("No employees bb found!");
+    	}
+    	
+    	for(Employee e: eligibleEmployees) {
+    		String emailSubject = "Congratulations on Your One-Year Anniversary!";
+        	String emailContent = "Dear "+e.getName()+",\n\n" +
+        		    "We are thrilled to celebrate your one-year anniversary with "+e.getOrganization()+". Your dedication and hard work have made a significant impact on our team and our success.\n\n" +
+        		    "In recognition of your milestone, we want to express our heartfelt appreciation for your contributions. It's employees like you who make our organization thrive, and we look forward to many more years of collaboration and success.\n\n" +
+        		    "Congratulations on reaching this significant milestone, and here's to many more years of growth and achievement together!\n\n" +
+        		    "Warm regards,\n" +
+        		    "Papa ki pari\n" +
+        		    "Human Resources Manager\n" +
+        		    e.getOrganization();
+
+        	emailService.sendEmailAccordingToRequirements(e.getEmail(), emailSubject, emailContent);
+    	}
+    	
+    	return "Email sent to all the eligible employees successfully";
+    }
+    
+    public List<Employee> getEmployeeByBirthMonth(Integer birthMonth) throws EmployeeException{
+    	
+    	List<Employee> employees = employeeRepository.findByBirthDateMonth(birthMonth);
+    	
+    	if(employees.isEmpty()) {
+    		throw new EmployeeException("No employees found!");
+    	}
+    	
+    	return employees;
     }
 }
