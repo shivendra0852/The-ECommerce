@@ -3,6 +3,7 @@ package com.ecommerce.module;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,23 @@ public class AddressService {
 		
 		address.setEmployee(employeeRepository.findById(id).get());
 		return addressRepository.save(address);
+	}
+	
+	public List<Address> getAddressByEmployeeId(Integer id) throws EmployeeException, AddressException{
+		
+		Optional<Employee> existingEmployee = employeeRepository.findById(id);
+		
+		if(existingEmployee.isEmpty()) {
+			throw new EmployeeException("Employee not found!");
+		}
+		
+		List<Address> existingAddress = addressRepository.findByEmployee_Id(id);
+		
+		if(existingAddress.isEmpty()) {
+			throw new AddressException("Address not found!");
+		}
+		
+		return existingAddress;
 	}
 	
 	

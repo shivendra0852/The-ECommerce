@@ -152,4 +152,14 @@ public class EmployeeService {
     	
     	return employees;
     }
+    
+    public Employee getEmployeeById(Integer id) throws EmployeeException{
+    	Optional<Employee> existingEmployee = employeeRepository.findById(id);
+    	
+    	if(existingEmployee.isEmpty()) {
+    		throw new EmployeeException("Employee doesn't exist with this "+id);
+    	}
+    	
+    	return existingEmployee.get();
+    }
 }
